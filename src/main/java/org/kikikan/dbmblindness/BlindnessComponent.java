@@ -69,7 +69,7 @@ class BlindRunnable extends BukkitRunnable {
         players.forEach((s) -> {
             Player p = s.getPlayer();
             p.removePotionEffect(PotionEffectType.BLINDNESS);
-            p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 0));
+            p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 0));
         });
     }
 
