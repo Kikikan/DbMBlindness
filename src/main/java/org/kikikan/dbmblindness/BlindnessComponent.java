@@ -19,9 +19,11 @@ import java.util.ArrayList;
 public class BlindnessComponent extends GameComponent {
 
     private BlindRunnable runnable;
+    static int blindLevel;
 
     public BlindnessComponent(JavaPlugin plugin, Game game) {
         super(plugin, game);
+        BlindnessComponent.blindLevel = (int)getValueFromConfig("level", 1) - 1;
     }
 
     private ArrayList<PerkUser> players = new ArrayList<>();
@@ -37,9 +39,9 @@ public class BlindnessComponent extends GameComponent {
     }
 
     public void onInit(GameStartedEvent event){
-        event.getGame().getPlayerManager().getSurvivors().forEach((s) -> players.add(s));
-        if (event.getGame().getPlayerManager().getKiller() != null)
-            players.add(event.getGame().getPlayerManager().getKiller());
+        players.addAll(event.getGame().getPlayerManager().getSurvivors());
+        if (event.getGame().getPlayerManager().getKiller().isPresent())
+            players.add(event.getGame().getPlayerManager().getKiller().get());
         event.getGame().announce(ChatColor.DARK_PURPLE + "The Entity has shrouded the surrounding area with never-ending darkness!");
         runnable = new BlindRunnable(getPlugin(), players);
     }
@@ -57,7 +59,7 @@ public class BlindnessComponent extends GameComponent {
 
 class BlindRunnable extends BukkitRunnable {
 
-    private ArrayList<PerkUser> players;
+    private final ArrayList<PerkUser> players;
 
     BlindRunnable(JavaPlugin plugin, ArrayList<PerkUser> p){
         players = p;
@@ -69,7 +71,7 @@ class BlindRunnable extends BukkitRunnable {
         players.forEach((s) -> {
             Player p = s.getPlayer();
             p.removePotionEffect(PotionEffectType.BLINDNESS);
-            p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 0));
+            p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, BlindnessComponent.blindLevel));
         });
     }
 
@@ -78,6 +80,7 @@ class BlindRunnable extends BukkitRunnable {
     }
 
     public void end(){
+        players.clear();
         this.cancel();
     }
 }

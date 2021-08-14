@@ -37,9 +37,7 @@
         <dependency>
             <groupId>org.kikikan</groupId>
             <artifactId>deadbymoonlight</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>C:\Users\kikik\IdeaProjects\DbMBlindness\DeadByMoonlight.jar</systemPath>
+            <version>1.6.1</version>
         </dependency>
 
     </dependencies>
