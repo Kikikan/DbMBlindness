@@ -1,6 +1,6 @@
 name: DbMBlindness
 main: org.kikikan.dbmblindness.DbMBlindness
-version: 1.0
+version: 1.2
 author: Kikikan
 api-version: 1.13
 depend: [DeadByMoonlight]
