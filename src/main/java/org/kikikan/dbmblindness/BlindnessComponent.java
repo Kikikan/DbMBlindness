@@ -8,6 +8,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.kikikan.deadbymoonlight.GameComponent;
 import org.kikikan.deadbymoonlight.events.player.survivor.HealthStateChangedEvent;
+import org.kikikan.deadbymoonlight.events.player.survivor.SurvivorLeftEvent;
 import org.kikikan.deadbymoonlight.events.world.GameFinishedEvent;
 import org.kikikan.deadbymoonlight.events.world.GameStartedEvent;
 import org.kikikan.deadbymoonlight.game.Game;
@@ -49,11 +50,16 @@ public class BlindnessComponent extends GameComponent {
     public void onEnd(GameFinishedEvent event){
         runnable.end();
         runnable = null;
+        players.clear();
     }
 
     public void onDeathOrEscape(HealthStateChangedEvent event){
-        if (event.to == Health.DEAD || event.to == Health.ESCAPED)
-            runnable.remove(event.player);
+        if (event.getTo() == Health.DEAD || event.getTo() == Health.ESCAPED)
+            players.remove(event.getPerkUser());
+    }
+
+    public void leave(SurvivorLeftEvent event){
+        players.remove(event.getPerkUser());
     }
 }
 
@@ -73,10 +79,6 @@ class BlindRunnable extends BukkitRunnable {
             p.removePotionEffect(PotionEffectType.BLINDNESS);
             p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, BlindnessComponent.blindLevel));
         });
-    }
-
-    public void remove(PerkUser p){
-        players.remove(p);
     }
 
     public void end(){
