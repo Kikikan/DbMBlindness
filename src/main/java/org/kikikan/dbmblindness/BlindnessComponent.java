@@ -7,6 +7,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.kikikan.deadbymoonlight.GameComponent;
+import org.kikikan.deadbymoonlight.events.EventHandler;
 import org.kikikan.deadbymoonlight.events.player.survivor.HealthStateChangedEvent;
 import org.kikikan.deadbymoonlight.events.player.survivor.SurvivorLeftEvent;
 import org.kikikan.deadbymoonlight.events.world.GameFinishedEvent;
@@ -39,6 +40,7 @@ public class BlindnessComponent extends GameComponent {
         return "Gives the Players Blindness Potion Effect until they die.";
     }
 
+    @EventHandler
     public void onInit(GameStartedEvent event){
         players.addAll(event.getGame().getPlayerManager().getSurvivors());
         if (event.getGame().getPlayerManager().getKiller().isPresent())
@@ -47,17 +49,20 @@ public class BlindnessComponent extends GameComponent {
         runnable = new BlindRunnable(getPlugin(), players);
     }
 
+    @EventHandler
     public void onEnd(GameFinishedEvent event){
         runnable.end();
         runnable = null;
         players.clear();
     }
 
+    @EventHandler
     public void onDeathOrEscape(HealthStateChangedEvent event){
         if (event.getTo() == Health.DEAD || event.getTo() == Health.ESCAPED)
             players.remove(event.getPerkUser());
     }
 
+    @EventHandler
     public void leave(SurvivorLeftEvent event){
         players.remove(event.getPerkUser());
     }
